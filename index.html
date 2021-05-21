@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset=utf-8>
+<title>ポモドーロタイマー</title>
+</head>
+<div style="width:400px; background-color:skyblue; color:#ffffff;">
+    作業用BGM
+    <input type="button" value="再生" onClick="workingMusic.playMusic()">
+    <input type="button" value="一時停止" onClick="workingMusic.pauseMusic()">
+    <audio id="working" src="working.mp3" loop controls></audio>
+</div>
+
+<div style="width:400px; background-color:pink; color:#ffffff;">
+    休憩用BGM
+    <input type="button" value="再生" onClick="restingMusic.playMusic()">
+    <input type="button" value="一時停止" onClick="restingMusic.pauseMusic()">
+    <audio id="resting" src="resting.mp3" loop controls></audio>
+</div>
+
+<script type="text/javascript">
+
+
+class Music {
+// 要らない可能性
+    
+    constructor(musicElement) {
+        this.music = musicElement
+    }
+
+    playMusic() {
+        this.music.play();
+    }
+
+    pauseMusic() {
+        this.music.pause();
+    }
+}
+
+var workingMusic = new Music(document.getElementById("working"));
+var restingMusic = new Music(document.getElementById("resting"));
+</script>
+
+</body> 
+</html>
