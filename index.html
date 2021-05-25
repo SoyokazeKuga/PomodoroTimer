@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
-<meta charset=utf-8>
-<title>ポモドーロタイマー</title>
+    <meta charset=utf-8>
+    <title>ポモドーロタイマー</title>
 </head>
 <div style="width:400px; background-color:skyblue; color:#ffffff;">
     作業用BGM
@@ -18,28 +19,120 @@
     <audio id="resting" src="resting.mp3" loop controls></audio>
 </div>
 
+<input type="button" value="再生" onClick="pomodoro.playPomodoro()">
+<input type="button" value="一時停止" onClick="pomodoro.pausePomodoro()">
+
 <script type="text/javascript">
 
+    class Music {
+        // 要らない可能性
 
-class Music {
-// 要らない可能性
-    
-    constructor(musicElement) {
-        this.music = musicElement
+        constructor(musicElement) {
+            this.music = musicElement
+            this.music.volume = 0.01;
+
+            this.music.addEventListener('timeupdate', (event) => {
+                // console.log(this.music.currentTime);
+            });
+        }
+
+        playMusic() {
+            this.music.play();
+        }
+
+        pauseMusic() {
+            this.music.pause();
+        }
     }
 
-    playMusic() {
-        this.music.play();
+    var workingMusic = new Music(document.getElementById("working"));
+    var restingMusic = new Music(document.getElementById("resting"));
+
+    // 選曲, 残り時間計算, 残り時間分流すロジック, Manager_繰り返し流す
+    // ステート管理　ロジックの混在を解消する
+    class PomodoroManager {
+        constructor() {
+            this.workingMusic = workingMusic; //todo
+            this.restingMusic = restingMusic;
+            this.workingMusicLength = 1000 * 10;
+            this.restingMusicLength = 1000 * 10;
+            this.trackCount = 1;
+            this.nextMusicSession = null;
+            // startTimeに致命的なバグがある
+            this.startTime = new Date();
+            this.endTime = new Date();
+        }
+
+        playPomodoro() {
+            var firstMusicLength = null;
+
+            if (this.isWorkingTime()) {
+                // 残り再生時間
+                firstMusicLength = this.workingMusicLength - (this.endTime - this.startTime);
+
+            } else {
+                firstMusicLength = this.restingMusicLength - (this.endTime - this.startTime);
+            }
+
+            this.recursiveMusic(this.trackCount, firstMusicLength = firstMusicLength);
+        }
+
+        isWorkingTime() {
+            return parseInt(this.trackCount % 2) === 1;
+        }
+
+        /*
+        * 曲を切り替えながらループ再生する。
+        * trackCount : 曲の切り替わった回数
+        * firstMusicLength : 次の曲に切り替わるまでの時間。(一時停止し、再開したときを想定)
+        */
+        recursiveMusic(trackCount, firstMusicLength = null) {
+            console.log(trackCount + " " + new Date());
+
+            var musicLength = 0;
+
+            // 初期化
+            this.workingMusic.pauseMusic();
+            this.restingMusic.pauseMusic();
+
+            // 選曲
+            this.isWorkingTime() ? this.workingMusic.playMusic() : this.restingMusic.playMusic();
+            this.startTime = new Date() + musicLength;
+
+            // 曲の長さ
+            if (firstMusicLength !== null) {
+                musicLength = firstMusicLength;
+            } else if (this.isWorkingTime) {
+                musicLength = this.workingMusicLength;
+            } else {
+                musicLength = this.restingMusicLength;
+            }
+
+
+            /* アロー関数式を用いてthisの指定を関数定義時点でのスコープに縛っている */
+            /* 検索ワード: 高階関数 コールバック処理 アロー関数 */
+            // 次の曲の開始時間
+            this.nextMusicSession = setTimeout(() => { this.recursiveMusic(trackCount += 1) }, musicLength);
+
+            console.log(this.nextMusicSession);
+        }
+
+        pausePomodoro() {
+            this.workingMusic.pauseMusic();
+            this.restingMusic.pauseMusic();
+            console.log("削除前" + this.nextMusicSession);
+            clearTimeout(this.nextMusicSession);
+            this.nextMusicSession = null;
+            console.log("削除後 " + this.nextMusicSession);
+
+            this.endTime = new Date();
+        }
     }
 
-    pauseMusic() {
-        this.music.pause();
-    }
-}
+    var pomodoro = new PomodoroManager();
 
-var workingMusic = new Music(document.getElementById("working"));
-var restingMusic = new Music(document.getElementById("resting"));
 </script>
 
-</body> 
+</body>
+
 </html>
