@@ -48,34 +48,113 @@
     var workingMusic = new Music(document.getElementById("working"));
     var restingMusic = new Music(document.getElementById("resting"));
 
-    // 選曲, 残り時間計算, 残り時間分流すロジック, Manager_繰り返し流す
-    // ステート管理　ロジックの混在を解消する
-    class PomodoroManager {
+    // 残り時間の算出クラス。timeはミリ秒
+    // TODO: 残り時間の算出する場合、初期指定の曲の長さで初期化する必要がある。
+    class Timer {
         constructor() {
-            this.workingMusic = workingMusic; //todo
-            this.restingMusic = restingMusic;
-            this.workingMusicLength = 1000 * 10;
-            this.restingMusicLength = 1000 * 10;
-            this.trackCount = 1;
-            this.nextMusicSession = null;
-            // startTimeに致命的なバグがある
+            this.startTime = 0;
+            this.endTime = 0;
+            this.elapsedTime = 0;
+            this.remainingTime = 0;
+        }
+
+        // 曲の開始時間を設定する。曲の途中で始まった場合、経過時間を保持する。
+        setStartTime(){
             this.startTime = new Date();
+        }
+
+        // 曲の残り時間を算出し、開始時間、終了時間を初期化する。
+        determineRemaningTime(MusicLength){
+            this.setEndTime();
+            this.calcElapsedTime();
+            this.calcRemainingTime(MusicLength);
+            this.resetStartAndEndTime();
+        }
+
+        // 曲の終了時間を設定
+        setEndTime(){
             this.endTime = new Date();
         }
 
-        playPomodoro() {
-            var firstMusicLength = null;
+        // 初期化
+        resetStartAndEndTime(){
+            this.startTime = 0;
+            this.endTime = 0;
+        }
 
+        // 経過時間初期化
+        resetElapsedTime(){
+            this.elapsedTime = 0;
+        }
+
+        // 曲の経過時間の設定と返却
+        calcElapsedTime(){
+            this.elapsedTime = this.elapsedTime + (this.endTime - this.startTime);
+            return this.elapsedTime;
+        }
+
+        // 曲の残り時間を返す
+        calcRemainingTime(MusicLength=null){
+            if(MusicLength === null) console.error('MusicLengthを指定してください');
+            this.remainingTime = MusicLength - this.elapsedTime;
+            return this.remainingTime;
+        }
+    }
+
+
+    // 選曲, 残り時間計算, 残り時間分流すロジック, Manager_繰り返し流す
+    // ステート管理　ロジックの混在を解消する
+    class PomodoroManager {
+        constructor(workingMusic, restingMusic) {
+            this.workingMusic = workingMusic;
+            this.restingMusic = restingMusic;
+            this.workingMusicLength = 1000 * 4;
+            this.restingMusicLength = 1000 * 4;
+            this.trackCount = 1;
+            this.nextMusicSession = null;
+            this.time = new Timer();
+            this.isDebugMode = true;
+        }
+
+        playPomodoro() {
             if (this.isWorkingTime()) {
-                // 残り再生時間
-                firstMusicLength = this.workingMusicLength - (this.endTime - this.startTime);
+                this.time.calcRemainingTime(this.workingMusicLength);
 
             } else {
-                firstMusicLength = this.restingMusicLength - (this.endTime - this.startTime);
+                this.time.calcRemainingTime(this.restingMusicLength);
             }
 
-            this.recursiveMusic(this.trackCount, firstMusicLength = firstMusicLength);
+            // 1曲目再生
+            this.isWorkingTime() ? this.workingMusic.playMusic() : this.restingMusic.playMusic();
+            this.time.setStartTime();
+            this.debugLog();
+
+            // 2曲目以降再生
+            this.nextMusicSession = setTimeout(
+                () => {this.recursiveMusic(this.trackCount)},
+                this.time.remainingTime
+            );
         }
+
+        pausePomodoro() {
+            this.workingMusic.pauseMusic();
+            this.restingMusic.pauseMusic();
+
+            // Session初期化
+            clearTimeout(this.nextMusicSession);
+            this.nextMusicSession = null;
+
+            // 曲の残り時間の算出
+            if (this.isWorkingTime()) {
+                this.time.determineRemaningTime(this.workingMusicLength)
+
+            } else {
+                this.time.determineRemaningTime(this.restingMusicLength)
+            }
+
+            this.debugLog();
+        }
+        
 
         isWorkingTime() {
             return parseInt(this.trackCount % 2) === 1;
@@ -86,50 +165,51 @@
         * trackCount : 曲の切り替わった回数
         * firstMusicLength : 次の曲に切り替わるまでの時間。(一時停止し、再開したときを想定)
         */
-        recursiveMusic(trackCount, firstMusicLength = null) {
-            console.log(trackCount + " " + new Date());
-
+        recursiveMusic(trackCount) {
             var musicLength = 0;
 
             // 初期化
             this.workingMusic.pauseMusic();
             this.restingMusic.pauseMusic();
 
+            // todo　ひとつにまとめる
+            this.time.resetStartAndEndTime();
+            this.time.resetElapsedTime();
+            this.time.setStartTime();
+
+            this.trackCount += 1;
+
+            this.debugLog();
+
             // 選曲
             this.isWorkingTime() ? this.workingMusic.playMusic() : this.restingMusic.playMusic();
-            this.startTime = new Date() + musicLength;
 
             // 曲の長さ
-            if (firstMusicLength !== null) {
-                musicLength = firstMusicLength;
-            } else if (this.isWorkingTime) {
+            if (this.isWorkingTime) {
                 musicLength = this.workingMusicLength;
             } else {
                 musicLength = this.restingMusicLength;
             }
 
-
             /* アロー関数式を用いてthisの指定を関数定義時点でのスコープに縛っている */
             /* 検索ワード: 高階関数 コールバック処理 アロー関数 */
             // 次の曲の開始時間
-            this.nextMusicSession = setTimeout(() => { this.recursiveMusic(trackCount += 1) }, musicLength);
-
-            console.log(this.nextMusicSession);
+            this.nextMusicSession = setTimeout(() => { this.recursiveMusic(this.trackCount) }, musicLength);
         }
 
-        pausePomodoro() {
-            this.workingMusic.pauseMusic();
-            this.restingMusic.pauseMusic();
-            console.log("削除前" + this.nextMusicSession);
-            clearTimeout(this.nextMusicSession);
-            this.nextMusicSession = null;
-            console.log("削除後 " + this.nextMusicSession);
-
-            this.endTime = new Date();
+        debugLog(){
+            if(this.isDebugMode !== true) return;
+            console.log(
+                "startTime: "+ this.time.startTime + "\n" +
+                "endTime: "+ this.time.endTime + "\n" +
+                "elapsedTime: "+ this.time.elapsedTime + "\n" +
+                "remainingTime: "+ this.time.remainingTime + "\n" +
+                "trackCount: "+ this.trackCount
+            );
         }
     }
 
-    var pomodoro = new PomodoroManager();
+    var pomodoro = new PomodoroManager(workingMusic, restingMusic);
 
 </script>
 
