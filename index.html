@@ -67,6 +67,13 @@ class manager: 繰り返し再生(２回目以降再生)
             this.resetStartAndEndTime();
         }
 
+        // 曲の残り時間を初期化し、曲の開始時間を設定する。曲の切り替え時にタイマーをリセットすつ用途。
+        setStartTimeForRecursive(){
+            this.resetStartAndEndTime();
+            this.resetElapsedTime();
+            this.setStartTime();
+        }
+
         // 曲の終了時間を設定
         setEndTime(){
             this.endTime = new Date();
@@ -180,10 +187,7 @@ class manager: 繰り返し再生(２回目以降再生)
             // 初期化
             this.pauseMusic();
 
-            // todo　ひとつにまとめる
-            this.time.resetStartAndEndTime();
-            this.time.resetElapsedTime();
-            this.time.setStartTime();
+            this.time.setStartTimeForRecursive();
 
             this.trackCount += 1;
 
