@@ -6,17 +6,10 @@
     <title>ポモドーロタイマー</title>
 </head>
 <div style="width:400px; background-color:skyblue; color:#ffffff;">
-    作業用BGM
+    ポモドーロタイマー
     <input type="button" value="再生" onClick="workingMusic.playMusic()">
     <input type="button" value="一時停止" onClick="workingMusic.pauseMusic()">
-    <audio id="working" src="working.mp3" loop controls></audio>
-</div>
-
-<div style="width:400px; background-color:pink; color:#ffffff;">
-    休憩用BGM
-    <input type="button" value="再生" onClick="restingMusic.playMusic()">
-    <input type="button" value="一時停止" onClick="restingMusic.pauseMusic()">
-    <audio id="resting" src="resting.mp3" loop controls></audio>
+    <audio id="pomodoro" loop controls></audio>
 </div>
 
 <input type="button" value="再生" onClick="pomodoro.playPomodoro()">
@@ -24,32 +17,35 @@
 
 <script type="text/javascript">
 
-    class Music {
-        // 要らない可能性
+/* todo
+1. 1つのaudioエレメントから取得し、srcを張り替えてmusicを選択する様に変更
+2. 曲の長さはmusicインスタンスから取得する様に変更
+3. iteratorパターンに基づき曲を取得する様に変更
 
-        constructor(musicElement) {
-            this.music = musicElement
-            this.music.volume = 0.01;
+役割
+class iterator: 選曲, 
+class timer: 残り時間計算
+class musicSession: 音源設定, 曲の長さ 
+class manager: 残り時間を取得し再生(１回目再生)
+class manager: 繰り返し再生(２回目以降再生)
+*/
 
-            this.music.addEventListener('timeupdate', (event) => {
-                // console.log(this.music.currentTime);
-            });
+    class MusicSession {
+        constructor(src, length) {
+            this.src = src;
+            this.length = length;
         }
 
-        playMusic() {
-            this.music.play();
+        getSrc(){
+            return this.src;
         }
 
-        pauseMusic() {
-            this.music.pause();
+        getLength(){
+            return this.length;
         }
     }
 
-    var workingMusic = new Music(document.getElementById("working"));
-    var restingMusic = new Music(document.getElementById("resting"));
-
     // 残り時間の算出クラス。timeはミリ秒
-    // TODO: 残り時間の算出する場合、初期指定の曲の長さで初期化する必要がある。
     class Timer {
         constructor() {
             this.startTime = 0;
@@ -102,14 +98,17 @@
     }
 
 
-    // 選曲, 残り時間計算, 残り時間分流すロジック, Manager_繰り返し流す
-    // ステート管理　ロジックの混在を解消する
     class PomodoroManager {
-        constructor(workingMusic, restingMusic) {
-            this.workingMusic = workingMusic;
-            this.restingMusic = restingMusic;
-            this.workingMusicLength = 1000 * 4;
-            this.restingMusicLength = 1000 * 4;
+        constructor(audioElement, musicSessions) {
+            this.audio = audioElement;
+            this.audio.volume = 0.02;
+
+            this.musicSessions = musicSessions;
+
+            // TODO: iteratorに書き換え (src, lengthは一括管理する)
+            this.audio.src = musicSessions[0].getSrc();
+            this.musicLength = musicSessions[0].getLength();
+
             this.trackCount = 1;
             this.nextMusicSession = null;
             this.time = new Timer();
@@ -117,15 +116,10 @@
         }
 
         playPomodoro() {
-            if (this.isWorkingTime()) {
-                this.time.calcRemainingTime(this.workingMusicLength);
-
-            } else {
-                this.time.calcRemainingTime(this.restingMusicLength);
-            }
+            this.time.calcRemainingTime(this.musicLength);
 
             // 1曲目再生
-            this.isWorkingTime() ? this.workingMusic.playMusic() : this.restingMusic.playMusic();
+            this.playMusic();
             this.time.setStartTime();
             this.debugLog();
 
@@ -137,27 +131,42 @@
         }
 
         pausePomodoro() {
-            this.workingMusic.pauseMusic();
-            this.restingMusic.pauseMusic();
+            this.pauseMusic();
 
             // Session初期化
             clearTimeout(this.nextMusicSession);
             this.nextMusicSession = null;
 
             // 曲の残り時間の算出
-            if (this.isWorkingTime()) {
-                this.time.determineRemaningTime(this.workingMusicLength)
-
-            } else {
-                this.time.determineRemaningTime(this.restingMusicLength)
-            }
+            this.time.determineRemaningTime(this.musicLength);
 
             this.debugLog();
         }
-        
 
-        isWorkingTime() {
-            return parseInt(this.trackCount % 2) === 1;
+        playMusic(){
+            this.audio.play();
+        }
+
+        playMusicFromFirst(){
+            this.audio.load();
+            this.audio.play();
+        }
+
+        pauseMusic(){
+            this.audio.pause();
+        }
+
+        // TODO: iteratorに変更
+        switchMusic() {
+            if (parseInt(this.trackCount % 2) === 1){
+                this.audio.src = musicSessions[0].getSrc();
+                this.musicLength = musicSessions[0].getLength();
+                this.audio.load();
+            }else{
+                this.audio.src = musicSessions[1].getSrc();
+                this.musicLength = musicSessions[1].getLength();
+                this.audio.load();
+            }
         }
 
         /*
@@ -169,8 +178,7 @@
             var musicLength = 0;
 
             // 初期化
-            this.workingMusic.pauseMusic();
-            this.restingMusic.pauseMusic();
+            this.pauseMusic();
 
             // todo　ひとつにまとめる
             this.time.resetStartAndEndTime();
@@ -182,19 +190,13 @@
             this.debugLog();
 
             // 選曲
-            this.isWorkingTime() ? this.workingMusic.playMusic() : this.restingMusic.playMusic();
-
-            // 曲の長さ
-            if (this.isWorkingTime) {
-                musicLength = this.workingMusicLength;
-            } else {
-                musicLength = this.restingMusicLength;
-            }
+            this.switchMusic();
+            this.playMusic();
 
             /* アロー関数式を用いてthisの指定を関数定義時点でのスコープに縛っている */
             /* 検索ワード: 高階関数 コールバック処理 アロー関数 */
             // 次の曲の開始時間
-            this.nextMusicSession = setTimeout(() => { this.recursiveMusic(this.trackCount) }, musicLength);
+            this.nextMusicSession = setTimeout(() => { this.recursiveMusic(this.trackCount) }, this.musicLength);
         }
 
         debugLog(){
@@ -209,7 +211,8 @@
         }
     }
 
-    var pomodoro = new PomodoroManager(workingMusic, restingMusic);
+    var musicSessions = [new MusicSession("working.mp3",1000*4), new MusicSession("resting.mp3", 1000*3)];
+    var pomodoro = new PomodoroManager(document.getElementById("pomodoro"), musicSessions);
 
 </script>
 
