@@ -30,6 +30,31 @@ class manager: 残り時間を取得し再生(１回目再生)
 class manager: 繰り返し再生(２回目以降再生)
 */
 
+    class SessionIterator{
+        constructor(sessions){
+            this.index = 0;
+            this.sessions = sessions;
+        }
+
+        hasNext(){
+            if(this.index < this.sessions.length) return true;
+            
+            return false;
+        }
+
+        next(){
+            var session = this.sessions[this.index];
+            this.index ++;
+            
+            return session;
+        }
+
+        initIndex(){
+            this.index = 0;
+        }
+    }
+
+
     class MusicSession {
         constructor(src, length) {
             this.src = src;
@@ -110,13 +135,12 @@ class manager: 繰り返し再生(２回目以降再生)
             this.audio = audioElement;
             this.audio.volume = 0.02;
 
-            this.musicSessions = musicSessions;
+            this.sessionIterator = new SessionIterator(musicSessions);
 
-            // TODO: iteratorに書き換え (src, lengthは一括管理する)
-            this.audio.src = musicSessions[0].getSrc();
-            this.musicLength = musicSessions[0].getLength();
+            this.musicSession = this.sessionIterator.next();
+            this.audio.src = this.musicSession.getSrc();
+            this.musicLength = this.musicSession.getLength();
 
-            this.trackCount = 1;
             this.nextMusicSession = null;
             this.time = new Timer();
             this.isDebugMode = true;
@@ -132,7 +156,7 @@ class manager: 繰り返し再生(２回目以降再生)
 
             // 2曲目以降再生
             this.nextMusicSession = setTimeout(
-                () => {this.recursiveMusic(this.trackCount)},
+                () => {this.recursiveMusic()},
                 this.time.remainingTime
             );
         }
@@ -163,33 +187,27 @@ class manager: 繰り返し再生(２回目以降再生)
             this.audio.pause();
         }
 
-        // TODO: iteratorに変更
         switchMusic() {
-            if (parseInt(this.trackCount % 2) === 1){
-                this.audio.src = musicSessions[0].getSrc();
-                this.musicLength = musicSessions[0].getLength();
-                this.audio.load();
-            }else{
-                this.audio.src = musicSessions[1].getSrc();
-                this.musicLength = musicSessions[1].getLength();
-                this.audio.load();
-            }
+            this.musicSession = this.sessionIterator.next();
+            this.audio.src = this.musicSession.getSrc();
+            this.musicLength = this.musicSession.getLength();
+            this.audio.load();
         }
 
         /*
         * 曲を切り替えながらループ再生する。
-        * trackCount : 曲の切り替わった回数
         * firstMusicLength : 次の曲に切り替わるまでの時間。(一時停止し、再開したときを想定)
         */
-        recursiveMusic(trackCount) {
-            var musicLength = 0;
+        recursiveMusic() {
+            if(!this.sessionIterator.hasNext()){
+                console.log("End")
+                this.sessionIterator.initIndex();
+                return;
+            }
 
             // 初期化
             this.pauseMusic();
-
             this.time.setStartTimeForRecursive();
-
-            this.trackCount += 1;
 
             this.debugLog();
 
@@ -200,22 +218,28 @@ class manager: 繰り返し再生(２回目以降再生)
             /* アロー関数式を用いてthisの指定を関数定義時点でのスコープに縛っている */
             /* 検索ワード: 高階関数 コールバック処理 アロー関数 */
             // 次の曲の開始時間
-            this.nextMusicSession = setTimeout(() => { this.recursiveMusic(this.trackCount) }, this.musicLength);
+            this.nextMusicSession = setTimeout(() => { this.recursiveMusic() }, this.musicLength);
         }
 
         debugLog(){
             if(this.isDebugMode !== true) return;
             console.log(
+                "track: "+ this.sessionIterator.index + "\n" +
                 "startTime: "+ this.time.startTime + "\n" +
                 "endTime: "+ this.time.endTime + "\n" +
                 "elapsedTime: "+ this.time.elapsedTime + "\n" +
-                "remainingTime: "+ this.time.remainingTime + "\n" +
-                "trackCount: "+ this.trackCount
+                "remainingTime: "+ this.time.remainingTime + "\n"
             );
         }
     }
 
-    var musicSessions = [new MusicSession("working.mp3",1000*4), new MusicSession("resting.mp3", 1000*3)];
+    var musicSessions = [
+        new MusicSession("working.mp3",1000*2), 
+        new MusicSession("resting.mp3", 1000*4),
+        new MusicSession("working.mp3",1000*2), 
+        new MusicSession("resting.mp3", 1000*4),
+        new MusicSession("working.mp3",1000*2)
+    ];
     var pomodoro = new PomodoroManager(document.getElementById("pomodoro"), musicSessions);
 
 </script>
