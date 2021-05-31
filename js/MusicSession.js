@@ -1,7 +1,7 @@
 class MusicSession {
-    constructor(src, length) {
-        this.src = src;
-        this.length = length;
-        this.time = new Timer(length);
+    constructor(params) {
+        this.src = params.src;
+        this.length = params.length;
+        this.time = new Timer(this.length);
     }
 }

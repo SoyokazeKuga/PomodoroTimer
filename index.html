@@ -5,6 +5,7 @@
     <meta charset=utf-8>
     <title>ポモドーロタイマー</title>
     <script src="js/MusicSession.js"></script>
+    <script src="js/MusicSessionFactory.js"></script>
     <script src="js/PomodoroManager.js"></script>
 </head>
 <div style="width:400px; background-color:skyblue; color:#ffffff;">
@@ -17,14 +18,14 @@
 
 <script type="text/javascript">
 
-    var musicSessions = [
-        new MusicSession("working.mp3", 1000 * 2), 
-        new MusicSession("resting.mp3", 1000 * 4),
-        new MusicSession("working.mp3", 1000 * 2), 
-        new MusicSession("resting.mp3", 1000 * 4),
-        new MusicSession("working.mp3", 1000 * 2)
-    ];
-    var pomodoro = new PomodoroManager(document.getElementById("pomodoro"), musicSessions);
+    var factory = new MusicSessionFactory();
+    factory.create({src: "working.mp3", length: 1000 * 2});
+    factory.create({src: "resting.mp3", length: 1000 * 4});
+    factory.create({src: "working.mp3", length: 1000 * 2}); 
+    factory.create({src: "resting.mp3", length: 1000 * 4});
+    factory.create({src: "working.mp3", length: 1000 * 2});
+
+    var pomodoro = new PomodoroManager(document.getElementById("pomodoro"), factory.musicSessions);
 
 </script>
 
