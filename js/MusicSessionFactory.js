@@ -1,4 +1,6 @@
-class MusicSessionFactory{
+import {MusicSession} from './MusicSession.js';
+
+export class MusicSessionFactory{
     constructor(){
         this.musicSessions = [];
     }
