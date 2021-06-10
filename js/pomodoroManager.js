@@ -1,12 +1,16 @@
-import {SessionIterator} from './SessionIterator.js';
+import { MusicSessionAudio } from './MusicSessionAudio.js';
+import { SessionIterator } from './SessionIterator.js';
 
 
 export class PomodoroManager {
     constructor(audioElement, musicSessions) {
         this.audio = audioElement;
-        this.audio.volume = 0.02;
+        this.audio.volume = 0.5;
 
         this.sessionIterator = new SessionIterator(musicSessions);
+
+        this.musicSessionAudio = new MusicSessionAudio(this.audio);
+        this.musicSessionAudio.sources = musicSessions[0].sources;
 
         this.nextMusicSession = null;
     }
@@ -22,18 +26,17 @@ export class PomodoroManager {
 
     playMusic() {
         this.musicSession.time.setStartTime();
-        this.audio.play();
+        this.musicSessionAudio.play();
     }
 
     pauseMusic() {
         this.musicSession.time.updateRemainingTime();
-        this.audio.pause();
+        this.musicSessionAudio.pause();
     }
 
     switchMusic() {
         this.musicSession = this.sessionIterator.next();
-        this.audio.src = this.musicSession.src;
-        this.audio.load();
+        this.musicSessionAudio.sources = this.musicSession.sources;
     }
 
     /*
@@ -50,6 +53,8 @@ export class PomodoroManager {
 
         var isPaused = !hasNext && !!this.nextMusicSession;
         if (!isPaused) this.switchMusic();
+
+        console.info("musicSessionIndex: ", this.sessionIterator.index);
 
         this.playMusic();
 

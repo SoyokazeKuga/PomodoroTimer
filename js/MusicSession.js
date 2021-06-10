@@ -1,9 +1,9 @@
-import {Timer} from "./Timer.js";
+import { Timer } from "./Timer.js";
 
 export class MusicSession {
-    constructor(params) {
-        this.src = params.src;
-        this.length = params.length;
+    constructor(sources, length) {
+        this.sources = sources;
+        this.length = length;
         this.time = new Timer(this.length);
     }
 }

@@ -1,22 +1,28 @@
-import {MusicSession} from './MusicSession.js';
+import { MusicSession } from './MusicSession.js';
 
-export class MusicSessionFactory{
-    constructor(){
-        this.musicSessions = [];
+export class MusicSessionFactory {
+    constructor() {
+        this.temporaryAudioSources = [];
     }
 
-    create(params){
-        var musicSession = this.__createMusicSession(params);
-        this.__registerMusicSession(musicSession);
+    create(length) {
+        if (this.temporaryAudioSources.length <= 0) throw "1曲以上設定してください";
+        var musicSession = new MusicSession(this.temporaryAudioSources, length);
+
+        this.temporaryAudioSources = [];
 
         return musicSession;
     }
 
-    __createMusicSession(params){
-        return new MusicSession(params);
+    pushTmpAudioSrcFromInputFile(file) {
+        var reader = new FileReader();
+        reader.readAsDataURL(file)
+        reader.onload = () => {
+            this.temporaryAudioSources.push(reader.result);
+        }
     }
 
-    __registerMusicSession(musicSession){
-        this.musicSessions.push(musicSession);
+    pushTmpAudioSrcFromPath(path) {
+        this.temporaryAudioSources.push(path);
     }
 }
