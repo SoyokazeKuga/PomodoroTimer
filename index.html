@@ -4,15 +4,28 @@
 <head>
     <meta charset=utf-8>
     <title>ポモドーロタイマー</title>
+    <link rel="shortcut icon" href="favicon.png" type="image/png">
 </head>
+
 <body>
     <div style="width:400px; background-color:skyblue; color:#ffffff;">
         ポモドーロタイマー
-        <audio id="pomodoro" loop controls></audio>
+        <audio id="pomodoro" controls></audio>
     </div>
-    <input id="play" type="button" value="再生">
-    <input id="pause" type="button" value="一時停止">
+    <div>
+        <input id="play" type="button" value="再生">
+        <input id="pause" type="button" value="一時停止">
+    </div>
+    working
+    <div style="width:400px; background-color:pink; color:#ffffff;">
+        <input type="file" id="working" accept="audio/*" multiple>
+    </div>
+    resting
+    <div style="width:400px; background-color:magenta; color:#ffffff;">
+        <input type="file" id="resting" accept="audio/*" multiple>
+    </div>
 
     <script type="module" src="js/main.js"></script>
 </body>
+
 </html>
