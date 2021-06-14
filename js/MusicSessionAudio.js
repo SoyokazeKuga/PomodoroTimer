@@ -7,22 +7,25 @@ export class MusicSessionAudio {
     constructor(audio) {
         this.audio = audio;
         this.iterator = null;
+        this.audio.addEventListener('ended', () => {
+            this.play(false);
+        });
     }
 
     set sources(sources) {
         this.iterator = new MusicSourcesIterator(sources);
+        this.audio.src = this.iterator.next();
     }
 
-    play() {
+    play(isPosed=true) {
         if (this.iterator.sources.length <= 0) throw "曲を設定してください";
 
-        this.audio.src = this.iterator.next();
-        console.info("title: ", this.audio.src);
+        if (!isPosed) {
+            this.audio.src = this.iterator.next();
+            console.info("title: ", this.audio.src);
+        }
 
         this.audio.play();
-        this.audio.onended = () => {
-            this.play();
-        }
     }
 
     pause() {
