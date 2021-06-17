@@ -12,6 +12,7 @@ export class SessionIterator {
 
     next() {
         var session = this.sessions[this.index];
+        console.info(" sessionIterator.index: ", this.index);
         this.index++;
 
         return session;

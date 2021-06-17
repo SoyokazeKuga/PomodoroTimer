@@ -22,9 +22,9 @@ export class MusicSessionAudio {
 
         if (!isPosed) {
             this.audio.src = this.iterator.next();
-            console.info("title: ", this.audio.src);
         }
 
+        console.info("  title: ", this.audio.src.split('/').slice(-1)[0], " audio_index: ", this.iterator.index);
         this.audio.play();
     }
 
