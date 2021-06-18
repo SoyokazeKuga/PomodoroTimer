@@ -3,23 +3,30 @@ import { SessionIterator } from './SessionIterator.js';
 
 
 export class PomodoroManager {
-    constructor(audioElement, musicSessions) {
+    constructor(audioElement) {
         this.audio = audioElement;
         this.audio.volume = 0.05;
 
-        this.musicSessionsMaster = musicSessions;
-
-        this.musicSessions = musicSessions;
-
-        this.sessionIterator = new SessionIterator(this.musicSessions);
-
         this.musicSessionAudio = new MusicSessionAudio(this.audio);
-        this.musicSessionAudio.sources = this.musicSessions[0].sources;
+
+        this.musicSessionsMaster = null;
+        this.musicSessions = null;
+        this.musicSession = null;
+        this.sessionIterator = null
 
         this.nextMusicSession = null;
     }
 
+    loadMusicSession(musicSessions) {
+        this.musicSessionsMaster = musicSessions;
+        this.musicSessions = musicSessions;
+
+        this.sessionIterator = new SessionIterator(musicSessions);
+        this.musicSessionAudio.sources = musicSessions[0].sources;
+    }
+
     playPomodoro() {
+        if (this.musicSessions == null) throw "musicSessionを設定してください";
         this.playMusicSession();
     }
 

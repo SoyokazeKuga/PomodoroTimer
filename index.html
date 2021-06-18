@@ -8,24 +8,60 @@
 </head>
 
 <body>
-    <div style="width:400px; background-color:skyblue; color:#ffffff;">
+    <div style="width:400px; background-color:#e5ccff ; color:black;">
         ポモドーロタイマー
         <audio id="pomodoro" controls></audio>
+        <div id="musicSession.index">1st</div>
+        <div id="remaningTime">00:00:01</div>
     </div>
-    <div>
+    <div style="width:400px; background-color:#ffccdc; color:black;">
         <input id="play" type="button" value="再生">
         <input id="pause" type="button" value="一時停止">
     </div>
-    working
-    <div style="width:400px; background-color:pink; color:#ffffff;">
-        <input type="file" id="working" accept="audio/*" multiple>
-    </div>
-    resting
-    <div style="width:400px; background-color:magenta; color:#ffffff;">
-        <input type="file" id="resting" accept="audio/*" multiple>
-    </div>
+    <details open="true" onchange="musicSessionSettingsLoad()">
+        <summary style="width:400px; background-color:#ffe5cc; color:black;">設定</summary>
+        <div style="width:400px; background-color:#fff9cc; color:black;">
+            時間割
+            <table>
+                <tbody>
+                    <tr>
+                        <td>1st:</td>
+                        <td><input type="number" value="25" class="musicSessionLengths">分</td>
+                    </tr>
+                    <tr>
+                        <td>2nd:</td>
+                        <td><input type="number" value="25" class="musicSessionLengths">分</td>
+                    </tr>
+                    <tr>
+                        <td>3rd:</td>
+                        <td><input type="number" value="25" class="musicSessionLengths">分</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div style="width:400px; background-color:#ccffd0; color:black;">
+            <details open="true">
+                <summary>working</summary>
+                <input type="file" class="workingMusics" accept="audio/*" multiple>
+                <input type="file" class="workingMusics" accept="audio/*" multiple>
+            </details>
+        </div>
+        <div style="width:400px; background-color:#ccf1ff ; color:black;">
+            <details open="true">
+                <summary>resting</summary>
+                <input type="file" class="restingMusics" accept="audio/*" multiple>
+                <input type="file" class="restingMusics" accept="audio/*" multiple>
+            </details>
+        </div>
+    </details>
 
     <script type="module" src="js/main.js"></script>
 </body>
+<style>
+    /* TODO: style全般は何らかのテーマで置き換える */
+    table tr:nth-child(odd) td {
+        background: #ffe5cc;
+    }
+</style>
 
 </html>
