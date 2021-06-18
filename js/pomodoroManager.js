@@ -10,6 +10,7 @@ export class PomodoroManager {
         this.musicSessionsMaster = musicSessions;
 
         this.musicSessions = musicSessions;
+
         this.sessionIterator = new SessionIterator(this.musicSessions);
 
         this.musicSessionAudio = new MusicSessionAudio(this.audio);
