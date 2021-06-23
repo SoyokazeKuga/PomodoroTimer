@@ -1,4 +1,4 @@
-import { MusicSessionAudio } from './MusicSessionAudio.js';
+import { MusicSessionAudio } from './musicSessionAudio/MusicSessionAudio.js';
 import { SessionIterator } from './SessionIterator.js';
 
 

@@ -1,4 +1,4 @@
-import { SessionIterator } from '../js/SessionIterator.js';
+import { SessionIterator } from '../js/pomodoro/pomodoroManager/SessionIterator';
 
 describe('SessionIterator', () => {
   describe('next', () => {

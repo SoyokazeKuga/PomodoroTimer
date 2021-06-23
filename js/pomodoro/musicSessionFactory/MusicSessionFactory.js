@@ -1,5 +1,5 @@
-import { MusicSession } from './MusicSession.js';
-import { FileReaderEx } from './utility.js';
+import { MusicSession } from '../musicSession/MusicSession.js';
+import { FileReaderEx } from '../utility.js';
 
 export class MusicSessionFactory {
     constructor() {

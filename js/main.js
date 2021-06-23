@@ -1,5 +1,5 @@
-import { PomodoroManager } from './PomodoroManager.js';
-import { MusicSessionFactory } from './MusicSessionFactory.js';
+import { PomodoroManager } from './pomodoro/pomodoroManager/PomodoroManager.js';
+import { MusicSessionFactory } from './pomodoro/musicSessionFactory/MusicSessionFactory.js';
 
 window.syykzPomodoro = new PomodoroManager(document.getElementById("pomodoro"));
 document.getElementById("play").addEventListener("click", () => { window.syykzPomodoro.playPomodoro() });

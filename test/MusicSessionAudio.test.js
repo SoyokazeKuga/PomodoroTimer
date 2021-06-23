@@ -1,4 +1,4 @@
-import { MusicSessionAudio } from '../js/MusicSessionAudio';
+import { MusicSessionAudio } from '../js/pomodoro/pomodoroManager/MusicSessionAudio/MusicSessionAudio';
 const path = require('path');
 
 describe('MusicSessionAudio', () => {
