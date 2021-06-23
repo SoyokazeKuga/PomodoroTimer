@@ -1,4 +1,5 @@
 import { MusicSession } from './MusicSession.js';
+import { FileReaderEx } from './utility.js';
 
 export class MusicSessionFactory {
     constructor() {
@@ -14,12 +15,10 @@ export class MusicSessionFactory {
         return musicSession;
     }
 
-    pushTmpAudioSrcFromInputFile(file) {
-        var reader = new FileReader();
-        reader.readAsDataURL(file)
-        reader.onload = () => {
-            this.temporaryAudioSources.push(reader.result);
-        }
+    async pushTmpAudioSrcFromInputFile(file) {
+        var reader = new FileReaderEx();
+
+        this.temporaryAudioSources.push(await reader.readAsDataURL(file));
     }
 
     pushTmpAudioSrcFromPath(path) {

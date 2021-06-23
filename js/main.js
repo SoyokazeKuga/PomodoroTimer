@@ -5,14 +5,13 @@ window.syykzPomodoro = new PomodoroManager(document.getElementById("pomodoro"));
 document.getElementById("play").addEventListener("click", () => { window.syykzPomodoro.playPomodoro() });
 document.getElementById("pause").addEventListener("click", () => { window.syykzPomodoro.pausePomodoro() });
 
-window.musicSessionSettingsLoad = () => {
+window.musicSessionSettingsLoad = async () => {
     var factory = new MusicSessionFactory();
     var musicSessions = [];
     var musicSessionLengths = document.getElementsByClassName('musicSessionLengths');
 
-    // TODO: 下記mp3の読み込みはonloadのタイミング問題で読み込まれない。
-    // var workingMusics = document.getElementsByClassName('workingMusics');
-    // factory.pushTmpAudioSrcFromInputFile(workingMusics[0].files[0]);
+    var workingMusics = document.getElementsByClassName('workingMusics');
+    await factory.pushTmpAudioSrcFromInputFile(workingMusics[0].files[0]);
 
     factory.pushTmpAudioSrcFromPath("./0.mp3");
     factory.pushTmpAudioSrcFromPath("./1.mp3");
