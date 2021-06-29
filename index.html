@@ -5,63 +5,96 @@
     <meta charset=utf-8>
     <title>ポモドーロタイマー</title>
     <link rel="shortcut icon" href="favicon.png" type="image/png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 </head>
 
 <body>
-    <div style="width:400px; background-color:#e5ccff ; color:black;">
-        ポモドーロタイマー
-        <audio id="pomodoro" controls></audio>
-        <div id="musicSession.index">1st</div>
-        <div id="remaningTime">00:00:01</div>
-    </div>
-    <div style="width:400px; background-color:#ffccdc; color:black;">
-        <input id="play" type="button" value="再生">
-        <input id="pause" type="button" value="一時停止">
-    </div>
-    <details open="true" onchange="musicSessionSettingsLoad()">
-        <summary style="width:400px; background-color:#ffe5cc; color:black;">設定</summary>
-        <div style="width:400px; background-color:#fff9cc; color:black;">
-            時間割
-            <table>
-                <tbody id="inputMusicLengths" onclick="addMusicLengthRow()">
-                    <tr>
-                        <td>1st:</td>
-                        <td><input type="number" value="25" class="musicSessionLengths">分</td>
-                    </tr>
-                    <tr>
-                        <td>2nd:</td>
-                        <td><input type="number" value="25" class="musicSessionLengths">分</td>
-                    </tr>
-                    <tr>
-                        <td>3rd:</td>
-                        <td><input type="number" value="25" class="musicSessionLengths">分</td>
-                    </tr>
-                </tbody>
-            </table>
+    <div class="container">
+        <div>
+            ポモドーロタイマー
+            <audio id="pomodoro" controls></audio>
+            <div id="musicSession.index">1st</div>
+            <div id="remaningTime">00:00:01</div>
         </div>
-        <div style="width:400px; background-color:#ccffd0; color:black;">
-            <details open="true">
-                <summary>working</summary>
-                <input type="file" class="workingMusics" accept="audio/*" multiple>
-                <input type="file" class="workingMusics" accept="audio/*" multiple>
+        <div>
+            <input id="play" type="button" value="再生">
+            <input id="pause" type="button" value="一時停止">
+        </div>
+        <div class="row">
+            <details open="true" onchange="musicSessionSettingsLoad()">
+                <summary>設定</summary>
+                <div class="col s6">
+                    <div>
+                        時間割
+                        <table>
+                            <tbody id="inputMusicLengths">
+                                <tr>
+                                    <td>:</td>
+                                    <td><input type="number" value="25" step="5" class="musicSessionLengths"></td>
+                                </tr>
+                                <tr>
+                                    <td>:</td>
+                                    <td><input type="number" value="25" step="5" class="musicSessionLengths"></td>
+                                </tr>
+                                <tr>
+                                    <td>:</td>
+                                    <td><input type="number" value="25" step="5" class="musicSessionLengths"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <row>
+                            <div class="col s6" onclick="addMusicLengthRow()">
+                                <a class="btn-large waves-effect waves-light red"><i class="material-icons">+</i></a>
+                            </div>
+                            <div class="col s6">
+                                <a class="btn-large waves-effect waves-light red"><i class="material-icons">-</i></a>
+                            </div>
+                        </row>
+                    </div>
+                </div>
+                <div class="col s6">
+                    <div>
+                        <div class="file-field input-field">
+                            <div class="btn">
+                                <span>Working Music Files</span>
+                                <input type="file" class="workingMusics" accept="audio/*" multiple>
+                            </div>
+                            <div class="file-path-wrapper">
+                                <input class="file-path validate" type="text" placeholder="Upload one or more files"
+                                    multiple>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="file-field input-field">
+                            <div class="btn">
+                                <span>Resting Music Files</span>
+                                <input type="file" class="restingMusics" accept="audio/*" multiple>
+                            </div>
+                            <div class="file-path-wrapper">
+                                <input class="file-path validate" type="text" placeholder="Upload one or more files">
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </details>
         </div>
-        <div style="width:400px; background-color:#ccf1ff ; color:black;">
-            <details open="true">
-                <summary>resting</summary>
-                <input type="file" class="restingMusics" accept="audio/*" multiple>
-                <input type="file" class="restingMusics" accept="audio/*" multiple>
-            </details>
-        </div>
-    </details>
-
+    </div>
     <script type="module" src="js/main.js"></script>
     <script src="js/view.js"></script>
 </body>
 <style>
-    /* TODO: style全般は何らかのテーマで置き換える */
-    table tr:nth-child(odd) td {
-        background: #ffe5cc;
+    table {
+        counter-reset: rowCount;
+    }
+
+    table>tbody>tr {
+        counter-increment: rowCount;
+    }
+
+    table>tbody>tr>td:first-child::before {
+        content: counter(rowCount);
     }
 </style>
 

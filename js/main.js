@@ -6,24 +6,27 @@ document.getElementById("play").addEventListener("click", () => { window.syykzPo
 document.getElementById("pause").addEventListener("click", () => { window.syykzPomodoro.pausePomodoro() });
 
 window.musicSessionSettingsLoad = async () => {
-    var factory = new MusicSessionFactory();
-    var musicSessions = [];
-    var musicSessionLengths = document.getElementsByClassName('musicSessionLengths');
+    const factory = new MusicSessionFactory();
+    let sessionLengths = document.getElementsByClassName('musicSessionLengths');
+    let workingMusics = document.getElementsByClassName('workingMusics')[0];
+    let restingMusics = document.getElementsByClassName('restingMusics')[0];
+    let musicSessions = [];
 
-    var workingMusics = document.getElementsByClassName('workingMusics');
-    await factory.pushTmpAudioSrcFromInputFile(workingMusics[0].files[0]);
+    for (let i = 0; i < sessionLengths.length; i++) {
+        let musics = null;
 
-    factory.pushTmpAudioSrcFromPath("./0.mp3");
-    factory.pushTmpAudioSrcFromPath("./1.mp3");
-    musicSessions.push(factory.create(musicSessionLengths[0].value * 1000 * 60));
+        if (i % 2 == 0) {
+            musics = workingMusics;
+        } else {
+            musics = restingMusics;
+        }
 
-    factory.pushTmpAudioSrcFromPath("./2.mp3");
-    factory.pushTmpAudioSrcFromPath("./3.mp3");
-    musicSessions.push(factory.create(musicSessionLengths[1].value * 1000 * 60));
+        for (let j = 0; j < musics.files.length; j++) {
+            await factory.pushTmpAudioSrcFromInputFile(musics.files[j]);
+        }
 
-    factory.pushTmpAudioSrcFromPath("./4.mp3");
-    factory.pushTmpAudioSrcFromPath("./5.mp3");
-    musicSessions.push(factory.create(musicSessionLengths[2].value * 1000 * 60));
+        musicSessions.push(factory.create(sessionLengths[i].value * 1000 * 60));
+    }
 
     window.syykzPomodoro.loadMusicSession(musicSessions);
 }
