@@ -21,6 +21,9 @@ window.musicSessionSettingsLoad = async () => {
             musics = restingMusics;
         }
 
+        // 初期値 仕様にするかは検討する
+        if(musics.files.length == 0) factory.pushTmpAudioSrcFromPath('/0.mp3');
+
         for (let j = 0; j < musics.files.length; j++) {
             await factory.pushTmpAudioSrcFromInputFile(musics.files[j]);
         }
@@ -30,3 +33,5 @@ window.musicSessionSettingsLoad = async () => {
 
     window.syykzPomodoro.loadMusicSession(musicSessions);
 }
+
+window.onload = musicSessionSettingsLoad();

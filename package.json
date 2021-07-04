@@ -1,6 +1,8 @@
 {
   "scripts": {
-    "jest": "jest test/*.test.js"
+    "jest": "jest test/*.test.js",
+    "build": "parcel build index.html",
+    "postbuild": "cp -r assets/* dist/"
   },
   "devDependencies": {
     "@babel/core": "^7.14.3",
@@ -8,6 +10,14 @@
     "@types/jest": "^26.0.23",
     "eslint": "^7.29.0",
     "eslint-config-google": "^0.14.0",
-    "jest": "^27.0.4"
-  }
+    "jest": "^27.0.4",
+    "postcss": "^8.2.15"
+  },
+  "dependencies": {
+    "dayjs": "^1.10.5",
+    "parcel": "1.12.3"
+  },
+  "browserslist": [
+    "since 2017-06"
+  ]
 }

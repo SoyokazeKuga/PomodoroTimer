@@ -76,4 +76,10 @@ export class PomodoroManager {
         // remainingTimeはpausePomodoro()時に更新される。hasNext=Trueのとき、remainingTimeは考慮せず次の曲に遷移する。
         this.nextMusicSession = setTimeout(() => { this.playMusicSession(true) }, this.musicSession.time.remainingTime);
     }
+
+    getRemainingTimeForView() {
+        if (this.musicSession == null) throw "曲が設定されていません"
+
+        return this.musicSession.time.getRemainingTimeForView();
+    }
 }

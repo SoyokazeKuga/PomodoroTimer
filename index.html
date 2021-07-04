@@ -15,7 +15,7 @@
             ポモドーロタイマー
             <audio id="pomodoro" controls></audio>
             <div id="musicSession.index">1st</div>
-            <div id="remaningTime">00:00:01</div>
+            <div id="remaningTime" onclick="pomodoroUpdateTimerView()">00:00:01</div>
         </div>
         <div>
             <input id="play" type="button" value="再生">
@@ -44,7 +44,7 @@
                             </tbody>
                         </table>
                         <row>
-                            <div class="col s6" onclick="addMusicLengthRow()">
+                            <div class="col s6" onclick="pomodoroAddMusicLengthRow()">
                                 <a class="btn-large waves-effect waves-light red"><i class="material-icons">+</i></a>
                             </div>
                             <div class="col s6">
@@ -81,7 +81,7 @@
             </details>
         </div>
     </div>
-    <script type="module" src="js/main.js"></script>
+    <script src="js/main.js"></script>
     <script src="js/view.js"></script>
 </body>
 <style>
@@ -97,5 +97,4 @@
         content: counter(rowCount);
     }
 </style>
-
 </html>
