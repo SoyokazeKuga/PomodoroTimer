@@ -1,7 +1,7 @@
 {
   "scripts": {
     "jest": "jest test/*.test.js",
-    "build": "parcel build index.html",
+    "build": "parcel build index.html --public-url ./",
     "postbuild": "cp -r assets/* dist/"
   },
   "devDependencies": {

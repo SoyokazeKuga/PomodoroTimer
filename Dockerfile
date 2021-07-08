@@ -1,4 +1,4 @@
-FROM node:16.3-stretch-slim
+FROM node:14.17.2-stretch-slim
 RUN yarn global add eslint
 
 WORKDIR /app
