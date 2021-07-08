@@ -78,7 +78,7 @@ export class PomodoroManager {
     }
 
     getRemainingTimeForView() {
-        if (this.musicSession == null) throw "曲が設定されていません"
+        if (this.musicSession == null) return "-設定入力待ち-";
 
         return this.musicSession.time.getRemainingTimeForView();
     }
