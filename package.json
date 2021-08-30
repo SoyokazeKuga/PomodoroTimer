@@ -5,17 +5,22 @@
     "postbuild": "cp -r assets/* dist/"
   },
   "devDependencies": {
-    "@babel/core": "^7.14.3",
+    "@babel/core": "^7.0.0-0",
+    "@babel/plugin-transform-runtime": "^7.14.5",
     "@babel/preset-env": "^7.14.4",
     "@types/jest": "^26.0.23",
+    "babel-preset-env": "^1.7.0",
     "eslint": "^7.29.0",
     "eslint-config-google": "^0.14.0",
     "jest": "^27.0.4",
     "postcss": "^8.2.15"
   },
   "dependencies": {
+    "@babel/preset-react": "^7.14.5",
+    "create-react-app": "^4.0.3",
     "dayjs": "^1.10.5",
-    "parcel": "1.12.3"
+    "parcel": "1.12.3",
+    "react": "^17.0.2"
   },
   "browserslist": [
     "since 2017-06"

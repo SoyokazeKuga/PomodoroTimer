@@ -10,79 +10,14 @@
 </head>
 
 <body>
-    <div class="container">
-        <div>
-            ポモドーロタイマー
-            <audio id="pomodoro" controls></audio>
-            <div id="musicSession.index">1st</div>
-            <div id="remaningTime" onclick="pomodoroUpdateTimerView()">00:00:01</div>
-        </div>
-        <div>
-            <input id="play" type="button" value="再生">
-            <input id="pause" type="button" value="一時停止">
-        </div>
-        <div class="row">
-            <details open="true" onchange="musicSessionSettingsLoad()">
-                <summary>設定</summary>
-                <div class="col s6">
-                    <div>
-                        時間割
-                        <table>
-                            <tbody id="inputMusicLengths">
-                                <tr>
-                                    <td>:</td>
-                                    <td><input type="number" value="25" step="5" class="musicSessionLengths"></td>
-                                </tr>
-                                <tr>
-                                    <td>:</td>
-                                    <td><input type="number" value="25" step="5" class="musicSessionLengths"></td>
-                                </tr>
-                                <tr>
-                                    <td>:</td>
-                                    <td><input type="number" value="25" step="5" class="musicSessionLengths"></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        <row>
-                            <div class="col s6" onclick="pomodoroAddMusicLengthRow()">
-                                <a class="btn-large waves-effect waves-light red"><i class="material-icons">+</i></a>
-                            </div>
-                            <div class="col s6">
-                                <a class="btn-large waves-effect waves-light red"><i class="material-icons">-</i></a>
-                            </div>
-                        </row>
-                    </div>
-                </div>
-                <div class="col s6">
-                    <div>
-                        <div class="file-field input-field">
-                            <div class="btn">
-                                <span>Working Music Files</span>
-                                <input type="file" class="workingMusics" accept="audio/*" multiple>
-                            </div>
-                            <div class="file-path-wrapper">
-                                <input class="file-path validate" type="text" placeholder="Upload one or more files"
-                                    multiple>
-                            </div>
-                        </div>
-                    </div>
-                    <div>
-                        <div class="file-field input-field">
-                            <div class="btn">
-                                <span>Resting Music Files</span>
-                                <input type="file" class="restingMusics" accept="audio/*" multiple>
-                            </div>
-                            <div class="file-path-wrapper">
-                                <input class="file-path validate" type="text" placeholder="Upload one or more files">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </details>
-        </div>
-    </div>
-    <script src="js/main.js"></script>
-    <script src="js/view.js"></script>
+    <div id="pomodoroContainer"></div>
+
+    <script src="https://unpkg.com/react@17/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js" crossorigin></script>
+
+    <!-- Load our React component. -->
+    <script src="js/pomodoro.js"></script>
+
 </body>
 <style>
     table {
@@ -97,4 +32,5 @@
         content: counter(rowCount);
     }
 </style>
+
 </html>

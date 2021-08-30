@@ -4,7 +4,7 @@ import { SessionIterator } from './SessionIterator.js';
 
 export class PomodoroManager {
     constructor(audioElement) {
-        this.audio = audioElement;
+        this.audio = !audioElement ? new Audio() : audioElement;
         this.audio.volume = 0.05;
 
         this.musicSessionAudio = new MusicSessionAudio(this.audio);
