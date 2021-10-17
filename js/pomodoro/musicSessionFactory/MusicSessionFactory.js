@@ -15,6 +15,15 @@ export class MusicSessionFactory {
         return musicSession;
     }
 
+    async pushTmpAudioSrc(file) {
+        if (file.type == "audio/mpeg") {
+            var reader = new FileReaderEx();
+            this.temporaryAudioSources.push(await reader.readAsDataURL(file));
+        } else {
+            this.temporaryAudioSources.push(file);
+        }
+    }
+
     async pushTmpAudioSrcFromInputFile(file) {
         var reader = new FileReaderEx();
 

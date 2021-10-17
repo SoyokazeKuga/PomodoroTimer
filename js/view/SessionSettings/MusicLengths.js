@@ -31,11 +31,11 @@ export class MusicLengths extends React.Component {
                     時間割
                     {this.viewList()}
                     <div>
-                        <div className="col s6" /*onclick="pomodoroAddMusicLengthRow()"*/>
-                            <a className="btn-large waves-effect waves-light red"><i className="material-icons">枠を追加</i></a>
+                        <div className="col s6" onClick={this.props.addMusicLengthField}>
+                            <button className="material-icons btn-small waves-effect waves-light">+</button>
                         </div>
-                        <div className="col s6">
-                            <a className="btn-large waves-effect waves-light red"><i className="material-icons">枠を減らす</i></a>
+                        <div className="col s6" onClick={this.props.removeMusicLengthField}>
+                            <button className="material-icons btn-small waves-effect waves-light">-</button>
                         </div>
                     </div>
                 </div>

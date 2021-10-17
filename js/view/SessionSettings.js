@@ -13,9 +13,13 @@ export class SessionSettings extends React.Component {
                     <summary>設定</summary>
                     <MusicLengths
                         musicLengths={this.props.musicLengths}
-                        onChange={this.props.musicLengthsOnChange} />
+                        onChange={this.props.musicLengthsOnChange}
+                        addMusicLengthField={this.props.addMusicLengthField} 
+                        removeMusicLengthField={this.props.removeMusicLengthField}/>
                     <MusicFiles
                         musicFilesOnChange={this.props.musicFilesOnChange}
+                        workingMusicFiles={this.props.workingMusicFiles}
+                        restingMusicFiles={this.props.restingMusicFiles}
                     />
                 </details>
             </div>
