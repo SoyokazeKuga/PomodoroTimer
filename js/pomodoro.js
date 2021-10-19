@@ -114,10 +114,6 @@ class Pomodoro extends React.Component {
         return this.state.userName ? this.state.userName + "さん" : "ログイン"
     }
     
-    displayMusicNames = () => {
-        return "TODO: 今後PomodoroManagerから取得する"
-    }
-
     // -- api methods --
     getUserMydataFromAPI = () => {
         api.get('users/mydata')
@@ -211,7 +207,6 @@ class Pomodoro extends React.Component {
                 <div className="container">
                     {/* 表示系 */}
                     <div id="clock" className="center">{this.state.timer.toString()}</div>
-                    <div className="center">曲名: {this.displayMusicNames()}</div>
                     {/* 操作系 */}
                     <audio id="pomodoro" />
                     <div className="center">
