@@ -18,8 +18,10 @@ export class SessionSettings extends React.Component {
                         removeMusicLengthField={this.props.removeMusicLengthField}/>
                     <MusicFiles
                         musicFilesOnChange={this.props.musicFilesOnChange}
+                        canUploadMusicFiles={this.props.canUploadMusicFiles}
                         workingMusicFiles={this.props.workingMusicFiles}
                         restingMusicFiles={this.props.restingMusicFiles}
+                        postUserMusicSessionFromAPI={this.props.postUserMusicSessionFromAPI}
                     />
                 </details>
             </div>

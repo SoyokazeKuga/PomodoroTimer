@@ -2,7 +2,7 @@
 import { PomodoroManager } from './pomodoro/pomodoroManager/PomodoroManager.js';
 import { MusicSessionFactory } from './pomodoro/musicSessionFactory/MusicSessionFactory.js';
 import { SessionSettings } from './view/SessionSettings';
-import axios from 'axios';
+import api from './view/api';
 
 class Pomodoro extends React.Component {
     constructor(props) {
@@ -15,6 +15,7 @@ class Pomodoro extends React.Component {
             // @todo: workingMusicFilesの入力値を統一する。
             workingMusicFiles: [],
             restingMusicFiles: [],
+            canUploadMusicFiles: false,
             pomodoroManager: new PomodoroManager(),
             timer: "--楽曲未設定--"
         };
@@ -83,10 +84,20 @@ class Pomodoro extends React.Component {
     }
 
     musicFilesOnChange = (workingMusicFile, restingMusicFile) => {
+        let canUploadMusicFiles = false;
+        
+        // @todo: musicFilesのインスタンス化
+        if (this.state.workingMusicFiles.every(music => music?.type == 'audio/mpeg') &&
+            this.state.restingMusicFiles.every(music => music?.type == 'audio/mpeg') &&
+            this.state.isLogined) {
+            canUploadMusicFiles = true;
+        }
+
         this.setState(
             {
                 workingMusicFiles: workingMusicFile,
                 restingMusicFiles: restingMusicFile,
+                canUploadMusicFiles: canUploadMusicFiles,
             }, this.loadPomodoroSettings);
     }
 
@@ -100,7 +111,7 @@ class Pomodoro extends React.Component {
 
     // -- display methods --
     displayLoginName = () => {
-        return this.state.userName != "" ? this.state.userName + "さん" : "ログイン"
+        return this.state.userName ? this.state.userName + "さん" : "ログイン"
     }
     
     displayMusicNames = () => {
@@ -109,15 +120,14 @@ class Pomodoro extends React.Component {
 
     // -- api methods --
     getUserMydataFromAPI = () => {
-        axios.get('http://localhost:3000/users/mydata', { withCredentials: true })
+        api.get('users/mydata')
             .then(response => {
-                console.log(response.data);
                 this.setState({
                     isLogined: true,
                     userName: response.data.name
                 })
 
-                // 本来ここに置くべきではない
+                // 本来ここに置くべきではない、他で使用する際に切り出すこと。
                 this.getUserMusicSessionFromAPI();
             })
     }
@@ -125,20 +135,32 @@ class Pomodoro extends React.Component {
     postUserMusicSessionFromAPI = () => {
         let params = new FormData();
 
+        if (this.state.musicLengths.length == 0) return false;
+        if (this.state.workingMusicFiles.length == 0) return false;
+        if (this.state.restingMusicFiles.length == 0) return false;
+
+        // 本来この分岐に入らない想定だが、念のため。
+        if (!this.state.workingMusicFiles.every(music =>  music?.type == 'audio/mpeg' ) ||
+            !this.state.restingMusicFiles.every(music =>  music?.type == 'audio/mpeg' )) {
+            
+            console.error("ファイル以外の送信はできません"); 
+            return false;
+        }
+
         this.state.musicLengths.forEach((value) => {
             params.append("lengths[]", value);
         })
 
-        // @todo: workingMusicFilesはurlが入ることがあるため、blob取得用から取得する様に変更する。
         this.state.workingMusicFiles.forEach((file) => {
             params.append("working_musics[]", file);
         })
 
         this.state.restingMusicFiles.forEach((file) => {
+            if (typeof(file)== "string") return;
             params.append("resting_musics[]", file);
         })
 
-        axios.post('http://localhost:3000/music_sessions', params, {withCredentials: true})
+        api.post('music_sessions', params)
             .then(response => {
                 M.toast({ html: "音楽データを保存しました", classes: "green" });
             }).catch(err => {
@@ -152,12 +174,8 @@ class Pomodoro extends React.Component {
     }
 
     getUserMusicSessionFromAPI = () => {
-        axios.get('http://localhost:3000/music_sessions', {withCredentials: true})
+        api.get('music_sessions')
             .then(response => {
-                window.res = response;
-
-                console.info(response)
-
                 let musicSessions = response.data.music_sessions;
 
                 // music_sessions[0]:WORKING [1]:RESTINGの前提。
@@ -194,11 +212,11 @@ class Pomodoro extends React.Component {
                     {/* 表示系 */}
                     <div id="clock" className="center">{this.state.timer.toString()}</div>
                     <div className="center">曲名: {this.displayMusicNames()}</div>
-                    {/* <Display /> */}
+                    {/* 操作系 */}
                     <audio id="pomodoro" />
                     <div className="center">
-                        <button id="play" className="material-icons btn-large waves-effect waves-light" onClick={this.playPomodoro}>開始</button>
-                        <button id="pause" className="material-icons btn-large waves-effect waves-light" onClick={this.pausePomodoro}>停止</button>
+                        <button id="play" className="material-icons btn-large waves-effect waves-light side-margin" onClick={this.playPomodoro}><i className="material-icons">play_arrow</i></button>
+                        <button id="pause" className="material-icons btn-large waves-effect waves-light side-margin" onClick={this.pausePomodoro}><i className="material-icons">pause</i></button>
                     </div>
                     {/* 設定系 */}
                     <SessionSettings
@@ -207,11 +225,11 @@ class Pomodoro extends React.Component {
                         addMusicLengthField={this.addMusicLengthField}
                         removeMusicLengthField={this.removeMusicLengthField}
                         musicFilesOnChange={this.musicFilesOnChange}
+                        canUploadMusicFiles={this.state.canUploadMusicFiles}
                         workingMusicFiles={this.state.workingMusicFiles}
                         restingMusicFiles={this.state.restingMusicFiles}
+                        postUserMusicSessionFromAPI={this.postUserMusicSessionFromAPI}
                     />
-                    <button onClick={this.postUserMusicSessionFromAPI}>サーバに保存</button>
-                    <button onClick={this.getUserMusicSessionFromAPI}>ロード @todo:ログイン時に自動ロードへ</button>
                 </div>
             </div>
         );

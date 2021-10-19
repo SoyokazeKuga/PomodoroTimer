@@ -2,3 +2,12 @@
     top: 40px;
     font-size: 38px;
 }
+
+.side-margin {
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+.visibility-none {
+    visibility: hidden;
+}

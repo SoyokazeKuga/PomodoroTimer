@@ -17,9 +17,10 @@ export class MusicLengths extends React.Component {
         });
 
         return (
-            <ul>
+            <ol className="music-session-list">
+                <p className="blue-grey-text">作業時間(分)</p>
                 {lengthHTML}
-            </ul>
+            </ol>
 
         );
     }
@@ -27,16 +28,14 @@ export class MusicLengths extends React.Component {
     render() {
         return (
             <div className="col s6">
-                <div>
-                    時間割
-                    {this.viewList()}
-                    <div>
-                        <div className="col s6" onClick={this.props.addMusicLengthField}>
-                            <button className="material-icons btn-small waves-effect waves-light">+</button>
-                        </div>
-                        <div className="col s6" onClick={this.props.removeMusicLengthField}>
-                            <button className="material-icons btn-small waves-effect waves-light">-</button>
-                        </div>
+                <div className="card teal lighten-5">
+                    <div className="card-content">
+                    <span className="card-title">時間割</span>
+                        {this.viewList()}
+                    </div>
+                    <div className="card-action container">
+                        <button onClick={this.props.addMusicLengthField} className="material-icons btn waves-effect waves-light">+ 時間割を追加</button>
+                        <button onClick={this.props.removeMusicLengthField} className="material-icons btn-small waves-effect waves-light right">-</button>
                     </div>
                 </div>
             </div>
