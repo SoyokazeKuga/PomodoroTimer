@@ -1,15 +1,16 @@
 # README
 
 ## 実行
-
 ```bash
-$ python3 -m http.server 3000
+$ yarn install
+$ yarn build
 ```
 
+## デプロイ
 ```bash
-$ parcel index.html  
+# ec2でnginx起動後
+$ cap staging deploy
 ```
-
 ## テスト
 
 ```sql
