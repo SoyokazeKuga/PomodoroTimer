@@ -194,7 +194,7 @@ class Pomodoro extends React.Component {
     }
 
     oauthSignIn = () => {
-        var oauth2Endpoint = 'http://accounts.google.com/o/oauth2/v2/auth';
+        var oauth2Endpoint = 'https://accounts.google.com/o/oauth2/v2/auth';
         // Create <form> element to submit parameters to OAuth 2.0 endpoint.
         var form = document.createElement('form');
         form.setAttribute('method', 'GET'); // Send as a GET request.
