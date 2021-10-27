@@ -194,39 +194,14 @@ class Pomodoro extends React.Component {
     }
 
     oauthSignIn = () => {
-        var oauth2Endpoint = 'https://accounts.google.com/o/oauth2/v2/auth';
-        // Create <form> element to submit parameters to OAuth 2.0 endpoint.
-        var form = document.createElement('form');
-        form.setAttribute('method', 'GET'); // Send as a GET request.
-        form.setAttribute('action', oauth2Endpoint);
+        // @todo: 設定ファイルへの切り出し
+        let redirect_domain = 'https://www.syykz.net';
+        if (process.env.NODE_ENV !== 'production') redirect_domain = 'http://localhost:3000';
+        let redirect_uri = redirect_domain + '/auth/google_oauth2';
 
-        let pro_url = 'https://www.syykz.net/api/users/auth/google_oauth2/callback';
-        let dev_url = 'http://localhost:3000/api/users/auth/google_oauth2/callback';
-
-        var params = {
-            'client_id': '119795716755-9cbu9bqmk9pl5e59hntnifceflcu105s.apps.googleusercontent.com',
-            'redirect_uri': pro_url,
-            'response_type': 'token',
-            'scope': 'https://www.googleapis.com/auth/drive.metadata.readonly',
-            'include_granted_scopes': 'true',
-            'state': 'pass-through value'
-        };
-
-        // Add form parameters as hidden input values.
-        for (var p in params) {
-            var input = document.createElement('input');
-            input.setAttribute('type', 'hidden');
-            input.setAttribute('name', p);
-            input.setAttribute('value', params[p]);
-            form.appendChild(input);
-        }
-
-        // Add form to page and submit it to open the OAuth 2.0 endpoint.
-        document.body.appendChild(form);
-
-        window.f = form;
-
-        form.submit();
+        return(
+            <a href={redirect_uri}>{this.displayLoginName()}</a>
+        );
     }
 
     render() {
@@ -236,12 +211,11 @@ class Pomodoro extends React.Component {
                     <div className="nav-wrapper container">
                         <a className="brand-logo">Cloud PomodoroTimer</a>
                         <ul className="right">
-                            <li><a href="http://localhost:3000/auth/google_oauth2">{this.displayLoginName()}</a></li>
+                            <li>{this.oauthSignIn()}</li>
                         </ul>
                     </div>
                 </nav>
                 <div className="container">
-                    <button onClick={this.oauthSignIn}>@dev ログイン</button>
                     {/* 表示系 */}
                     <div id="clock" className="center">{this.state.timer.toString()}</div>
                     {/* 操作系 */}
