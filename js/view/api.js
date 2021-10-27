@@ -1,7 +1,7 @@
 import axios from 'axios';
 import process from 'process';
 
-let baseURL = 'http://www.syykz.net/api/'
+let baseURL = 'https://www.syykz.net/api/'
 
 if (process.env.NODE_ENV !== 'production') {
     baseURL = 'http://localhost:3000/api/';
