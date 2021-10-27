@@ -45,9 +45,11 @@ export class MusicFiles extends React.Component {
                         <div onChange={this.onChange}>
                             <div>
                                 <div className="file-field input-field">
-                                    <div className="btn">
-                                        <i className="material-icons">audiotrack 作業中の音楽を選択</i>
-                                        <input type="file" className="workingMusics" accept="audio/*" multiple ref={this.workingMusicInput} />
+                                    <div>
+                                        <button disabled={this.props.isPlaying} className="btn">
+                                            <i className="material-icons">audiotrack 作業中の音楽を選択</i>
+                                            <input type="file" className="workingMusics" accept="audio/*" multiple ref={this.workingMusicInput} />
+                                        </button>
                                     </div>
                                     <div className="file-path-wrapper">
                                         <input className="file-path validate visibility-none" type="text" placeholder="Upload one or more files" multiple></input>
@@ -56,10 +58,10 @@ export class MusicFiles extends React.Component {
                             </div>
                             <div>
                                 <div className="file-field input-field">
-                                    <div className="btn">
+                                    <button disabled={this.props.isPlaying} className="btn">
                                         <i className="material-icons">audiotrack 休憩中の音楽を選択</i>
                                         <input type="file" className="restingMusics" accept="audio/*" multiple ref={this.restingMusicInput} />
-                                    </div>
+                                    </button>
                                     <div className="file-path-wrapper">
                                         <input className="file-path validate visibility-none" type="text" placeholder="Upload one or more files"></input>
                                     </div>
@@ -67,7 +69,7 @@ export class MusicFiles extends React.Component {
                             </div>
                         </div>
                         <div>
-                            <button disabled={!this.props.canUploadMusicFiles} className="material-icons btn waves-effect waves-light" onClick={this.props.postUserMusicSessionFromAPI}>
+                            <button disabled={!this.props.canUploadMusicFiles || this.props.isPlaying} className="material-icons btn waves-effect waves-light" onClick={this.props.postUserMusicSessionFromAPI}>
                                 <i className="material-icons">backup サーバに保存</i>
                             </button>
                         </div>

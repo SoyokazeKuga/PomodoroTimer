@@ -2,6 +2,7 @@ export function MusicLengthInput(props) {
     return (
         <li >
             <input
+                disabled={props.isPlaying}
                 type="number"
                 value={props.value}
                 step="5"

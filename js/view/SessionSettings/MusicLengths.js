@@ -8,6 +8,7 @@ export class MusicLengths extends React.Component {
         let lengthHTML = this.props.musicLengths.map((length, index) => {
             return (
                 <MusicLengthInput
+                    isPlaying={this.props.isPlaying}
                     key={index.toString()}
                     value={length}
                     index={index}
@@ -34,8 +35,8 @@ export class MusicLengths extends React.Component {
                         {this.viewList()}
                     </div>
                     <div className="card-action container">
-                        <button onClick={this.props.addMusicLengthField} className="material-icons btn waves-effect waves-light">+ 時間割を追加</button>
-                        <button onClick={this.props.removeMusicLengthField} className="material-icons btn-small waves-effect waves-light right">-</button>
+                        <button disabled={this.props.isPlaying} onClick={this.props.addMusicLengthField} className="material-icons btn waves-effect waves-light">+ 時間割を追加</button>
+                        <button disabled={this.props.isPlaying} onClick={this.props.removeMusicLengthField} className="material-icons btn-small waves-effect waves-light right">-</button>
                     </div>
                 </div>
             </div>

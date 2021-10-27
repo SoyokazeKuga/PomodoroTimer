@@ -10,7 +10,7 @@ class Pomodoro extends React.Component {
         this.state = {
             isLogined: false,
             userName: "",
-            value: 10,
+            isPlaying: false,
             musicLengths: [25, 5, 25],
             // @todo: workingMusicFilesの入力値を統一する。
             workingMusicFiles: [],
@@ -103,10 +103,12 @@ class Pomodoro extends React.Component {
 
     playPomodoro = () => {
         this.state.pomodoroManager.playPomodoro();
+        this.setState({isPlaying: true});
     }
 
     pausePomodoro = () => {
         this.state.pomodoroManager.pausePomodoro();
+        this.setState({isPlaying: false});
     }
 
     // -- display methods --
@@ -221,11 +223,12 @@ class Pomodoro extends React.Component {
                     {/* 操作系 */}
                     <audio id="pomodoro" />
                     <div className="center">
-                        <button id="play" className="material-icons btn-large waves-effect waves-light side-margin" onClick={this.playPomodoro}><i className="material-icons">play_arrow</i></button>
-                        <button id="pause" className="material-icons btn-large waves-effect waves-light side-margin" onClick={this.pausePomodoro}><i className="material-icons">pause</i></button>
+                        <button id="play" disabled={this.state.isPlaying} className="material-icons btn-large waves-effect waves-light side-margin" onClick={this.playPomodoro}><i className="material-icons">play_arrow</i></button>
+                        <button id="pause" disabled={!this.state.isPlaying} className="material-icons btn-large waves-effect waves-light side-margin" onClick={this.pausePomodoro}><i className="material-icons">pause</i></button>
                     </div>
                     {/* 設定系 */}
                     <SessionSettings
+                        isPlaying={this.state.isPlaying}
                         musicLengthsOnChange={this.musicLengthsOnChange}
                         musicLengths={this.state.musicLengths}
                         addMusicLengthField={this.addMusicLengthField}
