@@ -26,9 +26,12 @@ export class Timer {
     }
 
     getRemainingTimeForView() {
-        let fromIsPosed = this.startTime == null ? 0 : new Date() - this.startTime
+        let fromIsPosed = this.startTime == null ? 0 : new Date() - this.startTime;
+        let viewTime = this.remainingTime - fromIsPosed;
+        
+        if (viewTime < 0) return "終了"
 
         // dayjs.formatは日付用のため、24時間を超えると0に戻る。タイマーとして扱うのは本来不適。
-        return dayjs(this.remainingTime - fromIsPosed).add(-9, "hour").format('HH:mm:ss');
+        return dayjs(viewTime).add(-9, "hour").format('HH:mm:ss');
     }
 }

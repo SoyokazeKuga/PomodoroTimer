@@ -6,6 +6,7 @@ export function MusicLengthInput(props) {
                 type="number"
                 value={props.value}
                 step="5"
+                min="0"
                 className="musicSessionLengths"
                 onChange={(event) => props.onChange(event.target.value, props.index)} />
         </li>

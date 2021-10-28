@@ -40,6 +40,7 @@ class Pomodoro extends React.Component {
         const factory = new MusicSessionFactory();
         let musicSessions = [];
 
+        // @bug: musicFilesがurl指定で取得から5分経過するとリンク切れにより404エラー。
         for (let i = 0; i < this.state.musicLengths.length; i++) {
             let musics = i % 2 == 1 ? this.state.workingMusicFiles : this.state.restingMusicFiles;
 
@@ -55,7 +56,9 @@ class Pomodoro extends React.Component {
 
     musicLengthsOnChange = (value, index) => {
         let musicLengths = this.state.musicLengths.slice();
-        musicLengths[index] = value;
+        let length = value < 0 ? 5 : value ;
+        musicLengths[index] = length;
+
         this.setState(
             { musicLengths: musicLengths },
             this.loadPomodoroSettings);
